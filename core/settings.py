@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt",
     "drf_spectacular",
     "shortner_app",
 ]
@@ -117,6 +118,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+            "rest_framework.permissions.IsAuthenticated",
+    ),
+    # "DEFAULT_THROTTLE_RATES":{
+    #     "anon": "5/day",
+    #     "user": "100/day",
+    # }
 }
 
 SPECTACULAR_SETTINGS = {

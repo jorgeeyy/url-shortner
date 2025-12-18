@@ -15,20 +15,27 @@ def generate_random_string(length: int = 6) -> str:
             return random_str
 
 
-def create_shortened_url(original_url: str) -> ShortenedURL:
-    url_object = ShortenedURL.objects.create(original_url=original_url)
-
-    # encode the id to base62
-    # code = encode_base62(url_object.id)
-    # url_object.short_code = code
+def create_shortened_url(
+    original_url: str,
+    *,
+    user=None,
+    ip_address=None
+) -> ShortenedURL:
+    url_object = ShortenedURL.objects.create(
+        original_url=original_url,
+        user=user,
+        ip_address=ip_address,
+    )
 
     code = generate_random_string(6)
+    while ShortenedURL.objects.filter(short_code=code).exists():
+        code = generate_random_string(6)
+
     url_object.short_code = code
 
-    # generate QR code
     short_link = f"{settings.SITE_URL}/{code}"
     qr_image = generate_qr_code(short_link)
     url_object.qr_code_image.save(f"{code}_qr.png", qr_image)
-    url_object.save()
 
+    url_object.save()
     return url_object
